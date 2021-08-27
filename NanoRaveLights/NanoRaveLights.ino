@@ -4,7 +4,7 @@
 #define DATA_PIN 3
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
-#define NUM_LEDS 150
+#define NUM_LEDS 119
 #define BRIGHTNESS 96
 
 CRGB leds[NUM_LEDS];
@@ -16,31 +16,51 @@ void setup() {
 }
 
 // switches off all LEDs
-//void showProgramCleanUp(long delayTime) {
-//  for (int i = 0; i < NUM_LEDS; ++i) {
-//    leds[i] = CRGB::Black;
-//  }
-//  FastLED.show();
-//  delay(delayTime);
-//}
+void showProgramCleanUp(long delayTime) {
+  for (int i = 0; i < NUM_LEDS; ++i) {
+    leds[i] = CRGB::Black;
+  }
+  FastLED.show();
+  delay(delayTime);
+}
 
-// switches on all LEDs. Each LED is shown in random color.
-// numIterations: indicates how often LEDs are switched on in random colors
-// delayTime: indicates for how long LEDs are switched on.
-void showProgramRandom(int numIterations, long delayTime) {
-  for (int iteration = 0; iteration < numIterations; ++iteration) {
-    for (int i = 0; i < NUM_LEDS; ++i) {
-      leds[i] = CHSV(random8(),255,255); // hue, saturation, value
+void theaterChase(uint32_t c, uint8_t delayTime, CHSV Rand) {
+  for (int j=0; j<10; j++) {  //do 10 cycles of chasing
+    for (int q=0; q < 3; q++) {
+      for (uint16_t i=0; i < NUM_LEDS; i=i+3) {
+        leds[i+q] = Rand;    //turn every third pixel on
+      }
+      delay(delayTime);
+      FastLED.show();
+      
+      for (uint16_t i=0; i < NUM_LEDS; i=i+3) {
+        leds[i+q] = CHSV(0,0,0);        //turn every third pixel off
+      }
+      
+      delay(delayTime);
     }
-    FastLED.show();
-    delay(delayTime);
   }
 }
 
-// Shifts a single pixel from the start of strip to the end.
-// crgb: color of shifted pixel
-// delayTime: indicates how long the pixel is shown on each LED
-void showProgramShiftSinglePixel(CRGB crgb, long delayTime) {
+void theaterChase2(uint32_t c, uint8_t delayTime, CHSV Rand) {
+  for (int j=0; j<10; j++) {  //do 10 cycles of chasing
+    for (int q=0; q < 2; q++) {
+      for (uint16_t i=0; i < NUM_LEDS; i=i+2) {
+        leds[i+q] = Rand;    //turn every third pixel on
+      }
+      delay(delayTime);
+      FastLED.show();
+      
+      for (uint16_t i=0; i < NUM_LEDS; i=i+2) {
+        leds[i+q] = CHSV(0,0,0);        //turn every third pixel off
+      }
+      
+      delay(delayTime);
+    }
+  }
+}
+
+void showProgramShiftSinglePixel(CHSV crgb, long delayTime) {
   for (int i = 0; i < NUM_LEDS; ++i) {
     leds[i] = crgb;
     FastLED.show();
@@ -49,15 +69,95 @@ void showProgramShiftSinglePixel(CRGB crgb, long delayTime) {
   }
 }
 
+void showProgramShiftSinglePixelReverse(CHSV crgb, long delayTime) {
+  for (int i = NUM_LEDS; i > 0; --i) {
+    leds[i] = crgb;
+    FastLED.show();
+    delay(delayTime);
+    leds[i] = CRGB::Black;
+  }
+}
+
+void Sections(CHSV crgb) {
+  for (int i = 0; i < NUM_LEDS; ++i) {
+    leds[i] = crgb;
+    FastLED.show();
+  }
+}
+
+void reverseSections(CHSV crgb) {
+  for (int i = NUM_LEDS; i > 0; --i) {
+    leds[i] = crgb;
+    FastLED.show();
+  }
+}
+
+
 // main program
 void loop() {
-//  showProgramCleanUp(2500); // clean up
-  showProgramRandom(100, 100); // show "random" program
+  Sections(CHSV(random8(),255,255));
+  delay(500);
+  reverseSections(CHSV(random8(),255,255));
+  delay(200);
+  showProgramShiftSinglePixel(CHSV(random8(),255,255), 5);
+  reverseSections(CHSV(random8(),255,255));
+  delay(100);
+  showProgramShiftSinglePixelReverse(CHSV(random8(),255,255), 5);
+  reverseSections(CHSV(random8(),255,255));
+  showProgramShiftSinglePixelReverse(CHSV(random8(),255,255), 5);
+  Sections(CHSV(random8(),255,255));
+  showProgramShiftSinglePixel(CHSV(random8(),255,255), 5);
+  reverseSections(CHSV(random8(),255,255));
+  delay(20);
+  showProgramShiftSinglePixelReverse(CHSV(random8(),255,255), 5);
+  Sections(CHSV(random8(),255,255));
+  Sections(CHSV(random8(),255,255));
+  delay(250);
+  showProgramShiftSinglePixel(CHSV(random8(),255,255), 5);
+  reverseSections(CHSV(random8(),255,255));
+  delay(100);
+  showProgramShiftSinglePixel(CHSV(random8(),255,255), 5);
+  reverseSections(CHSV(random8(),255,255));
+  delay(20);
+  reverseSections(CHSV(random8(),255,255));
+  delay(400);
+  showProgramShiftSinglePixelReverse(CHSV(random8(),255,255), 5);
+
+  theaterChase(100, 25, CHSV(random8(), 255,255));
+  theaterChase(100, 50, CHSV(random8(), 255,255));
+  theaterChase2(100, 50, CHSV(random8(), 255,255));
   
- // showProgramCleanUp(2500); // clean up
-  showProgramShiftSinglePixel(CRGB::Blue, 25); // show "shift single pixel program" with blue pixel
+  Sections(CHSV(random8(),255,255));
+  delay(200);
+  showProgramCleanUp(100);
+  reverseSections(CHSV(random8(),255,255));
+  delay(500);
+  showProgramCleanUp(100);
+  Sections(CHSV(random8(),255,255));
+  delay(100);
+  showProgramCleanUp(100);
+  reverseSections(CHSV(random8(),255,255));
+  delay(10);
+  showProgramCleanUp(100);
+  Sections(CHSV(random8(),255,255));
+  delay(800);
+  showProgramCleanUp(100);
+  reverseSections(CHSV(random8(),255,255));  
+  delay(500);
+  showProgramCleanUp(100);
+  Sections(CHSV(random8(),255,255));
+  delay(100);
+  showProgramCleanUp(100);
+  reverseSections(CHSV(random8(),255,255));
+  delay(50);
+  showProgramCleanUp(100);
+  Sections(CHSV(random8(),255,255));
+  delay(100);
   
- // showProgramCleanUp(2500); // clean up
-  showProgramShiftSinglePixel(CRGB::Maroon, 25); // show "shift single pixel program" with maroon pixel
+  theaterChase(100, 25, CHSV(random8(), 255,255));
+  theaterChase(100, 50, CHSV(random8(), 255,255));
+  theaterChase2(100, 50, CHSV(random8(), 255,255));
+  
+  showProgramCleanUp(100);
   
 }

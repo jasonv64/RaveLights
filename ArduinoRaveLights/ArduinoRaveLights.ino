@@ -1,3 +1,4 @@
+
 #include <Adafruit_NeoPixel.h>
 #include <Wire.h>
 #include <Adafruit_Sensor.h> 
@@ -17,7 +18,7 @@
 //   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(5, DATA_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(50, DATA_PIN, NEO_GRB + NEO_KHZ800);
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified();
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
@@ -46,9 +47,6 @@ void setup() {
 void loop() {
   // Some example procedures showing how to display to the pixels:
    
-  colorWipe(strip.Color(255, 0, 0), 500); // Red
-  colorWipe(strip.Color(0, 255, 0), 500); // Green
-  colorWipe(strip.Color(0, 0, 255), 500); // Blue
   //colorWipe(strip.Color(0, 0, 0, 255), 50); // White RGBW
   // Send a theater pixel chase in...
   theaterChase(strip.Color(127, 127, 127), 500); // White
